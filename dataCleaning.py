@@ -5,8 +5,6 @@ from bs4 import BeautifulSoup
 
 def clean_from_text(data: str) -> List:
 
-    data = data.text
-
     if data[0:7] == '0|/*DX*':
         print("--------- type is json------------\n")
     else:
