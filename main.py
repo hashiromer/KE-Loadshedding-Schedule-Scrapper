@@ -9,9 +9,8 @@ from postTransformations import PostTransform
 
 
 class Main:
-    def __init__(self, isTest=False, page=9):
+    def __init__(self, isTest=False):
         self.test=isTest
-        self.page=page
 
     def run(self):
         if self.test==True:
@@ -21,9 +20,9 @@ class Main:
 
             foption= FormOptions()
             # foption.moveBlock()
-            pld=foption.MoveToPage(self.page)
+            encodedPayload=foption.getPayload()
             url = "https://staging.ke.com.pk:8490/index.aspx"
-            response = requests.request("POST", url, headers=headers, data=pld, timeout=5)
+            response = requests.request("POST", url, headers=headers, data=encodedPayload, timeout=5)
             response=response.text
 
 

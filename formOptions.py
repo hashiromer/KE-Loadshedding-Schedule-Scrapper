@@ -4,20 +4,11 @@ from example_payload import PayloadProcessor
 
 class FormOptions:
     def __init__(self) -> None:
-        self.options= {
-    '__CALLBACKPARAM': "c0:KV|2;[];GB|20;12|PAGERONCLICK3|PN0;"
-    # 'uploadGrd$CallbackState': '',
-    # '__VIEWSTATE': '',
-    # '__VIEWSTATEGENERATOR': '',
-    # '__EVENTVALIDATION': '',
-    # 'DXCss': ''
-        }
-
-        self.rangeStart=20
-        self.page=0
-        self.PAGERONCLICK=3
-
+        self.reset()
         self.payloadProcessor=PayloadProcessor()
+        self.payloadProcessor.add_options_to_payload(self.options)
+        
+
 
     def __ConstructFormParameter(self):
         self.options['__CALLBACKPARAM'] =\
@@ -39,20 +30,31 @@ class FormOptions:
 
         return self.getPayload(options)
         
-
+    def reset(self)->None:
+        self.rangeStart=20
+        self.page=0
+        self.PAGERONCLICK=3
+        self.options= {
+    '__CALLBACKPARAM':  "c0:KV|2;[];GB|20;12|PAGERONCLICK3|PN0;"
+        }
+        
+       
         
 
 
     def moveCursortoNextPage(self)->dict:
         self.page+=1
-        return self.__ConstructFormParameter()
+        d= self.__ConstructFormParameter()
+        return self.getPayload(d)
+
 
     def moveBlock(self)->dict:
         self.rangeStart+=1
         self.PAGERONCLICK+=1
-        return self.__ConstructFormParameter()
+        d= self.__ConstructFormParameter()
+        return self.getPayload(d)
 
-    def getPayload(self, partialOptions:dict)->str:
+    def getPayload(self, partialOptions:dict={})->str:
         self.payloadProcessor.add_options_to_payload(partialOptions)
         return self.payloadProcessor.getPayload()
 
