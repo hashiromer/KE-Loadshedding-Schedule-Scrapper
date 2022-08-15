@@ -59,6 +59,8 @@ class PayloadManager:
         self.payloadProcessor.add_options_to_payload(partialOptions)
         return self.payloadProcessor.getPayload()
 
+    def getBlock(self):
+        return self.PAGERONCLICK
 
 
 

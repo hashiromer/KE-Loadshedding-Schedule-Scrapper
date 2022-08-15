@@ -35,3 +35,5 @@ class PostTransform:
             writer = csv.writer(f)
             writer.writerows(self.data)
       
+    def get_data(self):
+        return self.data
