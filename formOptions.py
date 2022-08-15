@@ -1,4 +1,7 @@
 
+from example_payload import PayloadProcessor
+
+
 class FormOptions:
     def __init__(self) -> None:
         self.options= {
@@ -13,6 +16,8 @@ class FormOptions:
         self.rangeStart=20
         self.page=0
         self.PAGERONCLICK=3
+
+        self.payloadProcessor=PayloadProcessor()
 
     def __ConstructFormParameter(self):
         self.options['__CALLBACKPARAM'] =\
@@ -31,7 +36,10 @@ class FormOptions:
         ";12|PAGERONCLICK"+\
         str(self.PAGERONCLICK)+"|PN"+\
         str(pageNumber-1)+";"
-        return options
+
+        return self.getPayload(options)
+        
+
         
 
 
@@ -43,6 +51,11 @@ class FormOptions:
         self.rangeStart+=1
         self.PAGERONCLICK+=1
         return self.__ConstructFormParameter()
+
+    def getPayload(self, partialOptions:dict)->str:
+        self.payloadProcessor.add_options_to_payload(partialOptions)
+        return self.payloadProcessor.getPayload()
+
 
 
 
