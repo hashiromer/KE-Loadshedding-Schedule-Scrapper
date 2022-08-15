@@ -4,7 +4,7 @@ import pandas as pd
 import requests
 from dataCleaning import clean_from_text
 from example_payload import headers
-from formOptions import FormOptions
+from formOptions import PayloadManager
 from postTransformations import PostTransform
 
 
@@ -18,11 +18,15 @@ class Main:
                 response = f.read()
         else:
 
-            foption= FormOptions()
+            payload_manager= PayloadManager()
             # foption.moveBlock()
-            encodedPayload=foption.getPayload()
+            payload_manager.moveCursortoNextPage()
+            payload_manager.moveCursortoNextPage()
+            payload_manager.reset()
+            encodedPayload=payload_manager.getEncodedPayload()
             url = "https://staging.ke.com.pk:8490/index.aspx"
-            response = requests.request("POST", url, headers=headers, data=encodedPayload, timeout=5)
+            response = requests.request(
+                "POST", url, headers=headers, data=encodedPayload, timeout=5)
             response=response.text
 
 

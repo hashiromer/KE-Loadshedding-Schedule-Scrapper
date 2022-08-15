@@ -2,11 +2,10 @@
 from example_payload import PayloadProcessor
 
 
-class FormOptions:
+class PayloadManager:
     def __init__(self) -> None:
-        self.reset()
         self.payloadProcessor=PayloadProcessor()
-        self.payloadProcessor.add_options_to_payload(self.options)
+        self.reset()
         
 
 
@@ -28,7 +27,7 @@ class FormOptions:
         str(self.PAGERONCLICK)+"|PN"+\
         str(pageNumber-1)+";"
 
-        return self.getPayload(options)
+        return self.getEncodedPayload(options)
         
     def reset(self)->None:
         self.rangeStart=20
@@ -37,6 +36,8 @@ class FormOptions:
         self.options= {
     '__CALLBACKPARAM':  "c0:KV|2;[];GB|20;12|PAGERONCLICK3|PN0;"
         }
+        self.payloadProcessor.add_options_to_payload(self.options)
+
         
        
         
@@ -45,16 +46,16 @@ class FormOptions:
     def moveCursortoNextPage(self)->dict:
         self.page+=1
         d= self.__ConstructFormParameter()
-        return self.getPayload(d)
+        return self.getEncodedPayload(d)
 
 
     def moveBlock(self)->dict:
         self.rangeStart+=1
         self.PAGERONCLICK+=1
         d= self.__ConstructFormParameter()
-        return self.getPayload(d)
+        return self.getEncodedPayload(d)
 
-    def getPayload(self, partialOptions:dict={})->str:
+    def getEncodedPayload(self, partialOptions:dict={})->str:
         self.payloadProcessor.add_options_to_payload(partialOptions)
         return self.payloadProcessor.getPayload()
 
@@ -67,7 +68,7 @@ class FormOptions:
 
 
 if __name__ == "__main__":
-    formoptions = FormOptions()
+    formoptions = PayloadManager()
     print(formoptions.__ConstructFormParameter())
     #Next page
     formoptions.moveCursortoNextPage()
