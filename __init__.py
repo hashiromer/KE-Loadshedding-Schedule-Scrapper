@@ -3,37 +3,28 @@ import pandas as pd
 
 import requests
 from dataCleaning import clean_from_text
-from example_payload import dict_to_payload, payload, split_payload_to_dict, headers
+from example_payload import PayloadProcessor, headers
 from formOptions import FormOptions
 from postTransformations import PostTransform
 
-df=pd.DataFrame()
-d = split_payload_to_dict(payload)
-foption= FormOptions()
-# foption.moveBlock()
-f=foption.MoveToPage(1)
 
-# foption=formOptions.moveCursortoNextPage()
-# foption=formOptions.moveCursortoNextPage()
-
-
-
-for k, v in f.items():
-    d[k] = v
-
-
-pld = dict_to_payload(d)
-url = "https://staging.ke.com.pk:8490/index.aspx"
-print()
-
-
-test= True
+test= False
 if test==True:
     with open("datadump.txt") as f:
         response = f.read()
 else:
+    processor=PayloadProcessor()
+    d=processor.getdict()
+
+    foption= FormOptions()
+    formpartialoptions=foption.MoveToPage(9)
+    processor.add_options_to_payload(formpartialoptions)
+    pld=processor.getPayload()
+    url = "https://staging.ke.com.pk:8490/index.aspx"
+
     response = requests.request("POST", url, headers=headers, data=pld, timeout=5)
     response=response.text
+
 
 c = clean_from_text(response)
 pt= PostTransform(c)
