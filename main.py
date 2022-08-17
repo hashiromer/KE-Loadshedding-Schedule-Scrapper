@@ -1,9 +1,6 @@
-from ast import While
 import pandas as pd
-
-
 import requests
-from dataCleaning import clean_from_text
+from DataRow import DataRow
 from example_payload import headers
 from formOptions import PayloadManager
 from postTransformations import PostTransform
@@ -18,7 +15,19 @@ class Main:
             with open("datadump.txt") as f:
                 response = f.read()
         else:
-            col=[
+            rows=set()
+            payload_manager= PayloadManager()
+            count=0
+
+            while True:
+                print(count)
+                count+=1
+                block=payload_manager.getBlock()
+
+                if block ==7:
+                    print("Done: Existing")
+                    #Create a dataframe
+                    col=[
                 'Grids',
                 'Feeder_Name',
                 'Group',
@@ -30,17 +39,7 @@ class Main:
                 '5th_Cycle',
                 '6th_Cycle',
             ]
-            df=pd.DataFrame(columns=col)
-
-            payload_manager= PayloadManager()
-            count=0
-
-            while True:
-                print(count)
-                count+=1
-                block=payload_manager.getBlock()
-
-                if block ==7:
+                    df=pd.DataFrame(rows,columns=col)
                     df.to_csv("data.csv", index=False)
                     break
 
@@ -55,15 +54,21 @@ class Main:
 
                 pt= PostTransform(response)
                 pt.process_data()
-                data=pd.DataFrame(pt.get_data(), columns=col)
 
-                df=df.append(data, ignore_index=True)
-                if df.duplicated().sum()>0:
+                data=pt.get_data()
+
+                #Create Datarows from data
+                new_rows=set ( map(lambda x: DataRow(x), data) )
+                # new_rows=set(map(set,data))
+                # data=pd.DataFrame(data, columns=col)
+                if len(rows.intersection(new_rows))> 0:
                     print("Duplicates found")
-                    df=df.drop_duplicates()
                     payload_manager.moveBlock()
                 else:
                     payload_manager.moveCursortoNextPage()
+                print("Rows length",len(rows))
+                rows=rows.union(new_rows)
+                print(list(rows)[-1])    
                    
                
         
