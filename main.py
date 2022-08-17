@@ -43,6 +43,8 @@ class Main:
                 if block ==7:
                     df.to_csv("data.csv", index=False)
                     break
+
+
                 encodedPayload=payload_manager.getEncodedPayload()
                 url = "https://staging.ke.com.pk:8490/index.aspx"
                 response = requests.request(
@@ -53,6 +55,7 @@ class Main:
 
                 c = clean_from_text(response)
                 pt= PostTransform(c)
+                pt.list_to_rows()
 
                 data=pd.DataFrame(pt.get_data(), columns=col)
 
