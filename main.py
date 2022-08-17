@@ -53,10 +53,8 @@ class Main:
 
 
 
-                c = clean_from_text(response)
-                pt= PostTransform(c)
-                pt.list_to_rows()
-
+                pt= PostTransform(response)
+                pt.process_data()
                 data=pd.DataFrame(pt.get_data(), columns=col)
 
                 df=df.append(data, ignore_index=True)

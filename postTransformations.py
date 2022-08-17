@@ -5,12 +5,14 @@ import re
 from bs4 import BeautifulSoup
 
 class PostTransform:
-    def __init__(self, li:List[List]):
-        self.lists=li
+    def __init__(self,text:str):
+        self.lists=None
         self.data=None
+        self.text=text
 
 
-    def clean_from_text(data: str) -> List[List]:
+    def text_to_list(self):
+        data=self.text
         if data[0:7] == '0|/*DX*':
             print("--------- type is json------------\n")
         else:
@@ -27,8 +29,7 @@ class PostTransform:
             for table_row in table_data:
                 c.append(table_row.text)
             e.append(c)
-        return e
-
+        self.lists=e
 
 
 
@@ -51,7 +52,8 @@ class PostTransform:
 
 
     def process_data(self):
-        pass
+        self.text_to_list()
+        self.list_to_rows()
     
 
     def to_csv(self,filename:str):
