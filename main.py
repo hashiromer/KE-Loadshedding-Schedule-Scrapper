@@ -4,6 +4,7 @@ from DataRow import DataRow
 from example_payload import headers
 from formOptions import PayloadManager
 from postTransformations import PostTransform
+import time
 
 
 class Main:
@@ -28,17 +29,19 @@ class Main:
                     print("Done: Existing")
                     #Create a dataframe
                     col=[
-                'Grids',
-                'Feeder_Name',
-                'Group',
-                'Category',
-                '1st_Cycle',
-                '2nd_Cycle',
-                '3rd_Cycle',
-                '4th_Cycle',
-                '5th_Cycle',
-                '6th_Cycle',
-            ]
+                    'Grids',
+                    'Feeder_Name',
+                    'Group',
+                    'Category',
+                    '1st_Cycle',
+                    '2nd_Cycle',
+                    '3rd_Cycle',
+                    '4th_Cycle',
+                    '5th_Cycle',
+                    '6th_Cycle',
+                    ]
+                    row_list=list(rows)
+                    row_list=list( map(lambda x: x.get_row(), row_list))
                     df=pd.DataFrame(rows,columns=col)
                     df.to_csv("data.csv", index=False)
                     break
@@ -46,6 +49,8 @@ class Main:
 
                 encodedPayload=payload_manager.getEncodedPayload()
                 url = "https://staging.ke.com.pk:8490/index.aspx"
+                # Sleep for 1 second to avoid overloading the server
+                time.sleep(1)
                 response = requests.request(
                     "POST", url, headers=headers, data=encodedPayload, timeout=5)
                 response=response.text
@@ -68,7 +73,6 @@ class Main:
                     payload_manager.moveCursortoNextPage()
                 print("Rows length",len(rows))
                 rows=rows.union(new_rows)
-                print(list(rows)[-1])    
                    
                
         
