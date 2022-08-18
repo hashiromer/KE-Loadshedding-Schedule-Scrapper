@@ -4,12 +4,71 @@ import re
 import time
 from typing import List
 from DataRow import DataRow
-from example_payload import PayloadProcessor
 import requests
 from bs4 import BeautifulSoup
+from urllib.parse import quote
+
 
        
-headers = {
+
+
+
+
+def get_post_payload(options:dict) -> str:
+    form_body_data={
+    "__EVENTTARGET": "",
+    "__EVENTARGUMENT": "",
+    "__VIEWSTATE": "75bMG2iqZw68TRb9R%2BHHUJSZH7GrEdwuDANza%2F1gsiINbPQ8317qddj1VnAZ%2BwMm8nNpRmLuW1nj6g2BgUkkhuUv1dozcz0TvRK3F%2BfQsbHFAnqAxAa7cgeAvhIURkbp1Do7nwPD8%2F1gMMnqTr5RzcfldcyFWIvVzn6p9F3DlMLKsg4%2F6Q2G8qauX3EOk7B2yKumzPW4DpFhXDBEXZsCAQ7Q%2FieWIxqrIVhynrbF6%2Fs%3D",
+    "__VIEWSTATEGENERATOR": "90059987",
+    "uploadGrd$DXFREditorcol1": "",
+    "uploadGrd$DXFREditorcol2": "",
+    "uploadGrd$DXFREditorcol3": "",
+    "uploadGrd$DXFREditorcol4": "",
+    "uploadGrd$DXFREditorcol5": "",
+    "uploadGrd$DXFREditorcol6": "",
+    "uploadGrd$DXFREditorcol7": "",
+    "uploadGrd$DXFREditorcol8": "",
+    "uploadGrd$DXFREditorcol9": "",
+    "uploadGrd$DXFREditorcol10": "",
+    "uploadGrd$DXSelInput": "",
+    "uploadGrd$DXKVInput:": "[]",
+    "uploadGrd$CallbackState":"BwQHAgIERGF0YQbyBAAAAAClBQAApQUAAAoAAAAKAAAAAAoAAAAFR3JpZHMFR3JpZHMHAAALU3dpdGNoX05hbWULU3dpdGNoX05hbWUHAAAGR3JvdXBzBkdyb3VwcwcAAAhDYXRlZ29yeQhDYXRlZ29yeQcAAAtGaXJzdF9DeWNsZQtGaXJzdF9DeWNsZQcAAAxTZWNvbmRfQ3ljbGUMU2Vjb25kX0N5Y2xlBwAAC1RoaXJkX0N5Y2xlC1RoaXJkX0N5Y2xlBwAAC0ZvcnRoX0N5Y2xlC0ZvcnRoX0N5Y2xlBwAAC0ZpZnRoX0N5Y2xlC0ZpZnRoX0N5Y2xlBwAAC1NpeHRoX0N5Y2xlC1NpeHRoX0N5Y2xlBwAAAQAAAAJJRAcABwAHAAcABv%2F%2FBwIJQUdIQSBLSEFOBwINU0hBTUlNIEFITUVEIAcCATQHAglOb3JtYWwtTEwHAgkxMzM1fjE1MDUHAgkwMzA1fjA1MDUHAgEtBwIBLQcCAS0HAgEtBwAHAAb%2F%2FwcCCUFHSEEgS0hBTgcCC1NVTk5ZIFZPSFJBBwIBMQcCCU5vcm1hbC1MTAcCCTA5MDV%2BMTAzNQcCCTAxMDV%2BMDMwNQcCAS0HAgEtBwIBLQcCAS0HAAcABv%2F%2FBwIHQUlSUE9SVAcCGFNVUEVSSU9SIFNJQ0VOQ0UgQ09MTEVHRQcCATIHAgZDT04tTEwHAgkxMDM1fjEyMDUHAgkxNzA1fjE4MzUHAgkwMTA1fjAyMDUHAgkwMzA1fjA0MDUHAgEtBwIBLQcABwAG%2F%2F8HAgdBSVJQT1JUBwILVEFOR0EgU1RBTkQHAgExBwIGQ09OLUxMBwIJMDkwNX4xMDM1BwIJMTYwNX4xNzM1BwIJMDEwNX4wMjA1BwIJMDMwNX4wNDA1BwIBLQcCAS0HAAcABv%2F%2FBwIHQUlSUE9SVAcCFVNJRERJUUlBIE1BU0pJRCBSTVUgKwcCATMHAgZDT04tTEwHAgkxMjA1fjEzMzUHAgkxNzM1fjE5MDUHAgkwMTA1fjAyMDUHAgkwMzA1fjA0MDUHAgEtBwIBLQcABwAG%2F%2F8HAgdBSVJQT1JUBwIPU0hBTUEgQ0VOVFJFICArBwIBMgcCCU5vcm1hbC1MTAcCCTEwMzV%2BMTIwNQcCCTAxMDV%2BMDMwNQcCAS0HAgEtBwIBLQcCAS0HAAcABv%2F%2FBwIHQUlSUE9SVAcCF1NIT1VLQVQgVU1BUiBIT1NQSVRBTCArBwIBOQcCBkNPTi1MTAcCCTEzMDV%2BMTQzNQcCCTE3MzV%2BMTkwNQcCCTAwMDV%2BMDEwNQcCCTA1MDV%2BMDYwNQcCAS0HAgEtBwAHAAb%2F%2FwcCB0FJUlBPUlQHAg1TQU5HQU0gQ0lORU1BBwIBNgcCBkNPTi1MTAcCCTE1MzV%2BMTcwNQcCCTIwMzV%2BMjIwNQcCCTAwMDV%2BMDEwNQcCCTAyMDV%2BMDMwNQcCAS0HAgEtBwAHAAb%2F%2FwcCB0FJUlBPUlQHAgVRRUMgKwcCATYHAglOb3JtYWwtTEwHAgkxNjM1fjE4MDUHAgkwMzA1fjA1MDUHAgEtBwIBLQcCAS0HAgEtBwAHAAb%2F%2FwcCB0FJUlBPUlQHAgtSRVRBIFBMT1QgKwcCAjNjBwICSEwHAgkwODA1fjEwMzUHAgkxMzA1fjE2MDUHAgkxODM1fjIxMDUHAgkyMzA1fjAxMDUHAgEtBwIBLQIFU3RhdGUHXQcLBwACAQcBAgEHAgIBBwMCAQcEAgEHBQIBBwYCAQcHAgEHCAIBBwkCAQcKAgEHAAcABwAHAAIABQAAAIAJAgAHAAkCAAIAAwcEAgAHAAIBBqUFBwACAQcABwAHAAINU2hvd0ZpbHRlclJvdwoCAQIJUGFnZUluZGV4AwcB",
+    "DXScript":"1_171,1_94,1_164,1_104,1_138,1_114,1_121,1_152",
+    "DXCss":" 0_108,0_260,1_12,0_110,0_264,0_100,1_5,0_102",
+    "__CALLBACKID":"uploadGrd",
+    "__CALLBACKPARAM":"c0:KV|2;[];GB|20;12|PAGERONCLICK3|PN5",
+    "__EVENTVALIDATION":"ryBIH+GqwwiR5H8miIbcIgtdiuImx9XcWZfIJv9GMVoWfbDYJQqUYG3PsHfekIA3Gu0cfKl0CeG4EFsT5sM6CzYEUmaIa71F+FZ57nFxtDygvTTzYUnneLSjy6V1mESF"
+
+    
+
+
+}
+
+    #Add options to form_body_data
+
+    for key, value in options.items():
+        form_body_data[key]=value
+
+
+
+
+    t = []
+    for key, value in form_body_data.items():
+        if key == '__VIEWSTATE' or key == 'uploadGrd$CallbackState':
+            k = quote(key)
+            v = value
+        else:
+            k = quote(key)
+            v = quote(value)
+
+        st = k+'='+v
+        t.append(st)
+
+    split = '&'.join(t)
+    return split
+
+def make_Request_to_api(encoded_payload:str)->List:
+     headers = {
     'Accept': '*/*',
     'Accept-Language': 'en-US,en;q=0.9',
     'Cache-Control': 'no-cache',
@@ -27,10 +86,8 @@ headers = {
     'sec-ch-ua-mobile': '?0',
     'sec-ch-ua-platform': '"Windows"',
     'sec-gpc': '1'
-}
+    }
 
-
-def make_Request_to_api(encoded_payload:str)->List:
      response = requests.request(
                                     "POST",
                                     "https://staging.ke.com.pk:8490/index.aspx",
@@ -40,14 +97,14 @@ def make_Request_to_api(encoded_payload:str)->List:
                                 )
      return response.text
 def get_encoded_post_payload(page:int, PAGERONCLICK:int)->str:
-    payload_processor=PayloadProcessor()
+    
     options={}
     rangeStart=20+PAGERONCLICK-3
     options= {
     '__CALLBACKPARAM':  f"c0:KV|2;[];GB|{rangeStart};12|PAGERONCLICK{PAGERONCLICK}|PN{page};"
         }
-    payload_processor.add_options_to_payload(options)
-    return payload_processor.getPayload()
+    payload=get_post_payload(options)
+    return payload
 
 def get_block(page:int)->int:
 
@@ -69,19 +126,19 @@ def get_page(page:int):
 
 def get_load_shedding_schedule():
     total_pages=145
-    tot_rows=[]
+    total_rows=[]
     for page in range(total_pages):
         time.sleep(2)
         print(f"Page: {page}")
         data_list=get_page(page)
-        tot_rows.extend(data_list)
+        total_rows.extend(data_list)
    
-    data=list(set ( map(lambda x: DataRow(x), tot_rows) ))
-    return data
+    schedule=list(set ( map(lambda x: DataRow(x), total_rows) ))
+    schedule=list(map(lambda x: x.get_row(), schedule))
+    return schedule
 
 def save_to_disk(data:list[DataRow]):
    #Convert datarows to rows
-    data=list(map(lambda x: x.get_row(), data))
 
     col=[
                     'Grids',
@@ -145,7 +202,7 @@ def extract_table_from_text(text:str)->List:
 
 
 if __name__ == "__main__":
-    data=get_page(144)
+    data=get_page(3)
     print(data)
 
 

@@ -11,5 +11,5 @@ class Main:
                 response = f.read()
         else:
             data=get_load_shedding_schedule()
-            print("total rows: ", len(data))
+            print("Total Feeders: ", len(data))
             save_to_disk(data)
