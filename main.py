@@ -18,11 +18,11 @@ class Main:
             count=0
 
             while True:
-                print(count)
+                print(f"\n-----------Iteration Count: {count}---------------")
                 count+=1
                 block=payload_manager.getBlock()
 
-                if block ==7 or count ==3:
+                if block ==7:
                     print("Done: Existing")
                     #Create a dataframe
                     col=[
@@ -39,7 +39,7 @@ class Main:
                     ]
                     row_list=list(rows)
                     row_list=list( map(lambda x: x.get_row(), row_list))
-                    
+
                     with open('data.csv','w') as out:
                         csv_out=csv.writer(out)
                         csv_out.writerow(col)
@@ -54,12 +54,16 @@ class Main:
                 #Create Datarows from data
                 new_rows=set ( map(lambda x: DataRow(x), data_list) )
                 if len(rows.intersection(new_rows))> 0:
-                    print("Duplicates found")
+                    print(f"~~~Duplicates found at page: {payload_manager.getPage()}, PageOnClick: {payload_manager.getBlock()}")
+                    print("Total new rows found: ", len(new_rows- rows))
                     payload_manager.moveBlock()
                 else:
+                    print(f"{len(new_rows)} new values found at page: {payload_manager.getPage()}, PageOnClick: {payload_manager.getBlock()}")
                     payload_manager.moveCursortoNextPage()
-                print("Rows length",len(rows))
+
+                
                 rows=rows.union(new_rows)
+                print(f"Total Distinct Rows found so far: {len(rows)}")
                    
 # class DatRowSet:
 #     def __init__(self, list_of_rows=None):

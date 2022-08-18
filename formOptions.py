@@ -5,7 +5,16 @@ from example_payload import PayloadProcessor
 class PayloadManager:
     def __init__(self) -> None:
         self.payloadProcessor=PayloadProcessor()
-        self.reset()
+
+        self.rangeStart=20
+        self.page=0
+        self.PAGERONCLICK=3
+        self.options= {
+    '__CALLBACKPARAM':  f"c0:KV|2;[];GB|20;12|PAGERONCLICK3|PN0;"
+        }
+
+        self.payloadProcessor.add_options_to_payload(self.options)
+
         
 
 
@@ -29,15 +38,6 @@ class PayloadManager:
 
         return self.getEncodedPayload(options)
         
-    def reset(self)->None:
-        self.rangeStart=20
-        self.page=0
-        self.PAGERONCLICK=3
-        self.options= {
-    '__CALLBACKPARAM':  "c0:KV|2;[];GB|20;12|PAGERONCLICK3|PN0;"
-        }
-        self.payloadProcessor.add_options_to_payload(self.options)
-
         
        
         
@@ -62,6 +62,10 @@ class PayloadManager:
     def getBlock(self):
         return self.PAGERONCLICK
 
+    def getPage(self)->int:
+        return self.page
+
+
 
 
     def getFormOptions(self)->dict:
@@ -71,7 +75,7 @@ class PayloadManager:
 
 if __name__ == "__main__":
 
-    for i in range(10):
+    for i in range():
         print(i,)
    
 

@@ -1,4 +1,5 @@
 from example_payload import headers
+from formOptions import PayloadManager
 from postTransformations import PostTransform
 import requests
 import time
@@ -9,9 +10,6 @@ class KeRequest:
         self.method="POST"
         self.timeout=5
         self.encoded_payload=encoded_payload
-        self.proxies={
-            'http': "socks5://1.221.173.148:4145"
-        }
 
 
     def get_response(self):
@@ -22,7 +20,7 @@ class KeRequest:
                                     headers=headers,
                                     data=self.encoded_payload,
                                     timeout=self.timeout,
-                                    proxies=self.proxies
+                            
                                 )
         response=response.text
         pt= PostTransform(response)
@@ -33,6 +31,31 @@ class KeRequest:
     def add_delay(self):
         time.sleep(2)
        
+
+
+
+class KEManager:
+    def __init__(self) -> None:
+        self.payloadManager=PayloadManager()
+        self.breaks=[10, 100,145]
+
+
+    def start_requests(self):
+        start_page=0
+        last_page=15
+        for i in range(start_page,last_page):
+            print(i)
+            if i in self.breaks:
+                self.payloadManager.moveBlock()
+            payload=self.payloadManager.get_payload()
+            keRequest=KeRequest(payload)
+            data=keRequest.get_response()
+            self.payloadManager.moveCursortoNextPage()
+
+           
+
+
+
 
 if __name__ == "__main__":
     #Create a Request object
