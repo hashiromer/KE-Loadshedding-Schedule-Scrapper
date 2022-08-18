@@ -52,24 +52,3 @@ class PayloadProcessor:
 
         split = '&'.join(t)
         self.payload=split
-
-
-headers = {
-    'Accept': '*/*',
-    'Accept-Language': 'en-US,en;q=0.9',
-    'Cache-Control': 'no-cache',
-    'Connection': 'keep-alive',
-    'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-    'DNT': '1',
-    'Origin': 'https://staging.ke.com.pk:8490',
-    'Pragma': 'no-cache',
-    'Referer': 'https://staging.ke.com.pk:8490/index.aspx',
-    'Sec-Fetch-Dest': 'empty',
-    'Sec-Fetch-Mode': 'cors',
-    'Sec-Fetch-Site': 'same-origin',
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36',
-    'sec-ch-ua': '"Chromium";v="104", " Not A;Brand";v="99", "Google Chrome";v="104"',
-    'sec-ch-ua-mobile': '?0',
-    'sec-ch-ua-platform': '"Windows"',
-    'sec-gpc': '1'
-}
