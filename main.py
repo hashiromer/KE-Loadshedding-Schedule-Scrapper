@@ -46,26 +46,11 @@ class Main:
                     df.to_csv("data.csv", index=False)
                     break
 
-
                 encodedPayload=payload_manager.getEncodedPayload()
-                url = "https://staging.ke.com.pk:8490/index.aspx"
-                # Sleep for 1 second to avoid overloading the server
-                time.sleep(1)
-                response = requests.request(
-                    "POST", url, headers=headers, data=encodedPayload, timeout=5)
-                response=response.text
-
-
-
-                pt= PostTransform(response)
-                pt.process_data()
-
-                data=pt.get_data()
-
+                keRequest= KeRequest(encodedPayload)
+                data_list=keRequest.get_response()
                 #Create Datarows from data
-                new_rows=set ( map(lambda x: DataRow(x), data) )
-                # new_rows=set(map(set,data))
-                # data=pd.DataFrame(data, columns=col)
+                new_rows=set ( map(lambda x: DataRow(x), data_list) )
                 if len(rows.intersection(new_rows))> 0:
                     print("Duplicates found")
                     payload_manager.moveBlock()
@@ -77,5 +62,25 @@ class Main:
                
         
        
+class KeRequest:
+    def __init__(self, encoded_payload:str):
+        self.url="https://staging.ke.com.pk:8490/index.aspx"
+        self.method="POST"
+        self.timeout=5
+        self.encoded_payload=encoded_payload
+
+
+    def get_response(self):
+        self.add_delay()
+        response = requests.request(
+                    self.method, self.url, headers=headers, data=self.encoded_payload, timeout=self.timeout)
+        response=response.text
+        pt= PostTransform(response)
+        pt.process_data()
+        data=pt.get_data()
+        return data
+
+    def add_delay(self):
+        time.sleep(1)
        
             
