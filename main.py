@@ -1,7 +1,7 @@
-import pandas as pd
 from DataRow import DataRow
 from KERequest import KeRequest
 from formOptions import PayloadManager
+import csv
 
 
 class Main:
@@ -22,7 +22,7 @@ class Main:
                 count+=1
                 block=payload_manager.getBlock()
 
-                if block ==7:
+                if block ==7 or count ==3:
                     print("Done: Existing")
                     #Create a dataframe
                     col=[
@@ -39,8 +39,13 @@ class Main:
                     ]
                     row_list=list(rows)
                     row_list=list( map(lambda x: x.get_row(), row_list))
-                    df=pd.DataFrame(rows,columns=col)
-                    df.to_csv("data.csv", index=False)
+                    
+                    with open('data.csv','w') as out:
+                        csv_out=csv.writer(out)
+                        csv_out.writerow(col)
+                        for row in row_list:
+                            csv_out.writerow(row)
+
                     break
 
                 encodedPayload=payload_manager.getEncodedPayload()
@@ -56,6 +61,20 @@ class Main:
                 print("Rows length",len(rows))
                 rows=rows.union(new_rows)
                    
-               
+# class DatRowSet:
+#     def __init__(self, list_of_rows=None):
+#         if list_of_rows is None:
+#             self.rows=set()
+#         else:
+#             self.rows=set(list_of_rows)
+
+#     def add(self, row):
+#         self.rows.add(row)
+
+#     def get_rows(self):
+#         return self.rows
+
+#     def total_rows(self):
+#         return len(self.rows)               
         
        

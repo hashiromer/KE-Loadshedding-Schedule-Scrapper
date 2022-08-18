@@ -70,14 +70,11 @@ class PayloadManager:
 
 
 if __name__ == "__main__":
-    formoptions = PayloadManager()
-    print(formoptions.__ConstructFormParameter())
-    #Next page
-    formoptions.moveCursortoNextPage()
-    print(formoptions.__ConstructFormParameter())
-    #Move to next block
-    formoptions.moveBlock()
-    print(formoptions.__ConstructFormParameter())
+
+    for i in range(10):
+        print(i,)
+   
+
 
 
 
@@ -92,3 +89,7 @@ if __name__ == "__main__":
 # c0:KV|2;[];GB|21;12|PAGERONCLICK4|PN2;
 # c0:KV|2;[];GB|21;12|PAGERONCLICK4|PN11;
 # c0:KV|2;[];GB|21;12|PAGERONCLICK4|PN12;
+
+#10 Request, duplicates
+#100 Request, duplicates
+#145 Request, duplicates

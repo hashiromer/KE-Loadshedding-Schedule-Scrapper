@@ -14,9 +14,10 @@ class PostTransform:
     def text_to_list(self):
         data=self.text
         if data[0:7] == '0|/*DX*':
-            print("--------- type is json------------\n")
+            print("Response type: json\n")
         else:
-            print("--------- type is html------------\n")
+            print("Response type: HTML\n")
+
 
         testdata = data[20:-10]
         regular_expression = r"<tr id=\"uploadGrd_DXDataRow\d+\" class=\"dxgvDataRow_Aqua\">"
@@ -24,7 +25,7 @@ class PostTransform:
 
         e = []
         for i in range(1, len(l)):
-            table_data = BeautifulSoup(l[i], features="html").find_all("td")
+            table_data = BeautifulSoup(l[i], features="lxml").find_all("td")
             c = []
             for table_row in table_data:
                 c.append(table_row.text)
