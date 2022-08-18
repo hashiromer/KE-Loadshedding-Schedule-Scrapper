@@ -1,5 +1,6 @@
 
 import csv
+from pkgutil import get_data
 import re
 import time
 from typing import List
@@ -11,7 +12,7 @@ from urllib.parse import quote
 
        
 
-
+session_object=requests.Session()
 
 
 def get_post_payload(options:dict) -> str:
@@ -68,7 +69,9 @@ def get_post_payload(options:dict) -> str:
     return split
 
 def make_Request_to_api(encoded_payload:str)->List:
-     headers = {
+    
+
+    headers=  {
     'Accept': '*/*',
     'Accept-Language': 'en-US,en;q=0.9',
     'Cache-Control': 'no-cache',
@@ -86,16 +89,24 @@ def make_Request_to_api(encoded_payload:str)->List:
     'sec-ch-ua-mobile': '?0',
     'sec-ch-ua-platform': '"Windows"',
     'sec-gpc': '1'
-    }
+    },
 
-     response = requests.request(
-                                    "POST",
-                                    "https://staging.ke.com.pk:8490/index.aspx",
-                                    headers=headers,
-                                    data=encoded_payload,
-                                    timeout=5,
-                                )
-     return response.text
+    #Send request with sessions object
+    url="https://staging.ke.com.pk:8490/index.aspx"
+    response=session_object.post(url, data=encoded_payload, headers=headers[0],timeout=5)
+
+
+
+
+    # response= session_object.post("https://staging.ke.com.pk:8490/index.aspx",headers=header_tuples, data=encoded_payload, timeout=5)
+    #  response = requests.request(
+    #                                 "POST",
+    #                                 "https://staging.ke.com.pk:8490/index.aspx",
+    #                                 headers=headers,
+    #                                 data=encoded_payload,
+    #                                 timeout=5,
+    #                             )
+    return response.text
 def get_encoded_post_payload(page:int, PAGERONCLICK:int)->str:
     
     options={}
@@ -128,7 +139,6 @@ def get_load_shedding_schedule():
     total_pages=145
     total_rows=[]
     for page in range(total_pages):
-        time.sleep(2)
         print(f"Page: {page}")
         data_list=get_page(page)
         total_rows.extend(data_list)
@@ -202,7 +212,8 @@ def extract_table_from_text(text:str)->List:
 
 
 if __name__ == "__main__":
-    data=get_page(3)
-    print(data)
+    data=get_load_shedding_schedule()
+    print (len(data))
+    save_to_disk(data)
 
 
