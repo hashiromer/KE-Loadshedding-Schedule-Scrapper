@@ -1,6 +1,5 @@
 
 import csv
-from pkgutil import get_data
 import re
 import time
 from typing import List
