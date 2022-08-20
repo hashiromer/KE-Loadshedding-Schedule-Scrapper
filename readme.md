@@ -8,6 +8,8 @@
 
 - Execute the main script
 
+## Linux/WSL
+
 ```
 curl -sSL https://install.python-poetry.org | python3 -
 
