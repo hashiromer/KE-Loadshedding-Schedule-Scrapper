@@ -12,17 +12,5 @@ class DataRow:
 
     def get_row(self):
         return self.row
-
-
-
-if __name__ == "__main__":
-
-    #Create a list of DataRows
-     row1=["ab","cd","ef"]
-     row2=["jb","ld","ef"]
-     row3=["ab","cd","ef"]
-
-     Datarows=set(map(lambda x: DataRow(x), [row1,row2,row3]))
-
-     print(len(Datarows))
     
+

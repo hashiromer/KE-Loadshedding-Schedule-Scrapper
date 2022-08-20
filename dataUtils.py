@@ -9,8 +9,6 @@ from bs4 import BeautifulSoup
 from urllib.parse import quote
 
 
-       
-
 session_object=requests.Session()
 
 
@@ -126,7 +124,7 @@ def get_load_shedding_schedule():
     total_pages=145
     total_rows=[]
     for page in range(total_pages):
-        print(f"Page: {page}")
+        print(f"Fetching Page: {page}")
         data_list=get_page(page)
         total_rows.extend(data_list)
    
@@ -159,12 +157,8 @@ def save_to_disk(data:list[DataRow]):
 
 def extract_table_from_text(text:str)->List:
         data=text
-        if data[0:7] == '0|/*DX*':
-            print("Response type: json\n")
-        else:
+        if data[0:7] != '0|/*DX*':
             raise Exception("Response type: html\n")
-
-
         testdata = data[20:-10]
         regular_expression = r"<tr id=\"uploadGrd_DXDataRow\d+\" class=\"dxgvDataRow_Aqua\">"
         l = re.split(regular_expression, testdata)
