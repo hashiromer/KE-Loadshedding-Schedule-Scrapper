@@ -93,18 +93,6 @@ def make_Request_to_api(encoded_payload:str)->List:
     #Send request with sessions object
     url="https://staging.ke.com.pk:8490/index.aspx"
     response=session_object.post(url, data=encoded_payload, headers=headers[0],timeout=5)
-
-
-
-
-    # response= session_object.post("https://staging.ke.com.pk:8490/index.aspx",headers=header_tuples, data=encoded_payload, timeout=5)
-    #  response = requests.request(
-    #                                 "POST",
-    #                                 "https://staging.ke.com.pk:8490/index.aspx",
-    #                                 headers=headers,
-    #                                 data=encoded_payload,
-    #                                 timeout=5,
-    #                             )
     return response.text
 def get_encoded_post_payload(page:int, PAGERONCLICK:int)->str:
     
